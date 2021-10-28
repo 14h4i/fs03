@@ -8,12 +8,14 @@ class UserOnlineWidget extends StatelessWidget {
     this.fontSizeTitle = 11,
     required this.avatar,
     required this.title,
+    required this.status,
     Key? key,
   }) : super(key: key);
 
   final double radiusAvatar;
   final double fontSizeTitle;
   final String title;
+  final Status status;
   final ImageProvider<Object> avatar;
 
   @override
@@ -30,7 +32,7 @@ class UserOnlineWidget extends StatelessWidget {
                 right: radiusAvatar / 3 / 2,
                 bottom: 0,
                 child: StatusWidget(
-                  status: Status.online,
+                  status: status,
                   radius: radiusAvatar / 3,
                 ),
               ),

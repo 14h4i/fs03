@@ -27,13 +27,3 @@ Map<String, dynamic> _$ChatToJson(Chat instance) => <String, dynamic>{
       'unread_count': instance.unreadCount,
       'created_at': instance.createdAt?.toIso8601String(),
     };
-
-Chats _$ChatsFromJson(Map<String, dynamic> json) => Chats(
-      (json['results'] as List<dynamic>)
-          .map((e) => Chat.fromJson(e as Map<String, dynamic>))
-          .toList(),
-    );
-
-Map<String, dynamic> _$ChatsToJson(Chats instance) => <String, dynamic>{
-      'results': instance.results,
-    };

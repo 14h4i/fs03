@@ -34,14 +34,3 @@ enum Gender {
   female,
   other,
 }
-
-@JsonSerializable()
-class Users {
-  final List<User> results;
-
-  Users(this.results);
-
-  factory Users.fromJson(Map<String, dynamic> json) => _$UsersFromJson(json);
-
-  Map<String, dynamic> toJson() => _$UsersToJson(this);
-}

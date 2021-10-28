@@ -48,6 +48,7 @@ class AllWidgetsPage extends StatelessWidget {
                 title: 'Iron Man',
                 radiusAvatar: 30,
                 fontSizeTitle: 12,
+                status: Status.online,
               ),
               SizedBox(height: 10),
               AvatarMessageWidget(

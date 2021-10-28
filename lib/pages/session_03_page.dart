@@ -1,7 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:fs03/models/chat_model.dart';
 import 'package:fs03/models/user_model.dart';
-import 'package:fs03/services/generate_model.dart';
 import 'package:fs03/values/app_color.dart';
 import 'package:fs03/values/app_icon.dart';
 import 'package:fs03/values/app_json.dart';
@@ -17,14 +19,19 @@ class Session03Page extends StatefulWidget {
 }
 
 class _Session03PageState extends State<Session03Page> {
-  Users? _users;
-  Chats? _chats;
+  List<User> _users = [];
+  List<Chat> _chats = [];
+  int _selectedIndex = 2;
 
   @override
   void initState() {
     Future.delayed(Duration.zero, () async {
-      _users = await GenerateModel.jsonToUsers(AppJson.users);
-      _chats = await GenerateModel.jsonToChats(AppJson.chats);
+      _users = jsonDecode(await rootBundle.loadString(AppJson.users))['results']
+          .map<User>((json) => User.fromJson(json))
+          .toList();
+      _chats = jsonDecode(await rootBundle.loadString(AppJson.chats))['results']
+          .map<Chat>((json) => Chat.fromJson(json))
+          .toList();
       setState(() {});
     });
     super.initState();
@@ -33,6 +40,12 @@ class _Session03PageState extends State<Session03Page> {
   @override
   void dispose() {
     super.dispose();
+  }
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
   }
 
   @override
@@ -75,15 +88,16 @@ class _Session03PageState extends State<Session03Page> {
                 height: 82,
                 child: ListView.builder(
                     scrollDirection: Axis.horizontal,
-                    itemCount: _users != null ? _users!.results.length : 0,
+                    itemCount: _users.length,
                     itemBuilder: (context, index) {
-                      if (_users != null) {
-                        final user = _users!.results[index];
+                      if (_users.isNotEmpty) {
+                        final user = _users[index];
                         return UserOnlineWidget(
                           avatar: NetworkImage(user.picture!.medium!),
                           title: user.name!,
                           radiusAvatar: 30,
                           fontSizeTitle: 11,
+                          status: user.status!,
                         );
                       }
                       return Container();
@@ -91,19 +105,21 @@ class _Session03PageState extends State<Session03Page> {
               ),
             ),
           ),
-          const SliverToBoxAdapter(
-            child: Divider(
-              height: 30,
-              thickness: 2,
-            ),
+          SliverToBoxAdapter(
+            child: _users.isNotEmpty
+                ? const Divider(
+                    height: 30,
+                    thickness: 2,
+                  )
+                : Container(),
           ),
           SliverPadding(
             padding: const EdgeInsets.only(left: 10),
             sliver: SliverList(
               delegate: SliverChildBuilderDelegate(
                 (context, index) {
-                  if (_chats != null) {
-                    final chat = _chats!.results[index];
+                  if (_chats.isNotEmpty) {
+                    final chat = _chats[index];
                     final user = chat.user!;
                     final time = chat.createdAt != null
                         ? DateFormat('hh:mma').format(chat.createdAt!)
@@ -119,7 +135,7 @@ class _Session03PageState extends State<Session03Page> {
                     );
                   }
                 },
-                childCount: _chats != null ? _chats!.results.length : 0,
+                childCount: _chats.length,
               ),
             ),
           ),
@@ -127,33 +143,69 @@ class _Session03PageState extends State<Session03Page> {
       ),
       bottomNavigationBar: BottomNavigationBar(
         showUnselectedLabels: true,
+        backgroundColor: AppColor.bgColorBt,
+        type: BottomNavigationBarType.fixed,
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Image.asset(
               AppIcon.home,
+              color: AppColor.grey,
+            ),
+            activeIcon: Image.asset(
+              AppIcon.home,
+              color: AppColor.pink,
             ),
             label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: Image.asset(AppIcon.streams),
+            icon: Image.asset(
+              AppIcon.streams,
+              color: AppColor.grey,
+            ),
+            activeIcon: Image.asset(
+              AppIcon.streams,
+              color: AppColor.pink,
+            ),
             label: 'Streams',
           ),
           BottomNavigationBarItem(
-            icon: Image.asset(AppIcon.message),
+            icon: Image.asset(
+              AppIcon.message,
+              color: AppColor.grey,
+            ),
+            activeIcon: Image.asset(
+              AppIcon.message,
+              color: AppColor.pink,
+            ),
             label: 'Messages',
           ),
           BottomNavigationBarItem(
-            icon: Image.asset(AppIcon.notifications),
+            icon: Image.asset(
+              AppIcon.notifications,
+              color: AppColor.grey,
+            ),
+            activeIcon: Image.asset(
+              AppIcon.notifications,
+              color: AppColor.pink,
+            ),
             label: 'Notifications',
           ),
           BottomNavigationBarItem(
-            icon: Image.asset(AppIcon.profiles),
+            icon: Image.asset(
+              AppIcon.profiles,
+              color: AppColor.grey,
+            ),
+            activeIcon: Image.asset(
+              AppIcon.profiles,
+              color: AppColor.pink,
+            ),
             label: 'Profiles',
           ),
         ],
-        currentIndex: 2,
-        selectedItemColor: Colors.amber[800],
-        onTap: null,
+        currentIndex: _selectedIndex,
+        selectedItemColor: AppColor.pink,
+        unselectedItemColor: AppColor.grey,
+        onTap: _onItemTapped,
       ),
     );
   }

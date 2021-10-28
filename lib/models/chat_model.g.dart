@@ -12,20 +12,20 @@ Chat _$ChatFromJson(Map<String, dynamic> json) => Chat(
       user: json['user'] == null
           ? null
           : User.fromJson(json['user'] as Map<String, dynamic>),
-      replyCount: json['replyCount'] as int?,
-      unreadCount: json['unreadCount'] as int?,
-      createdAt: json['createdAt'] == null
+      replyCount: json['reply_count'] as int?,
+      unreadCount: json['unread_count'] as int?,
+      createdAt: json['created_at'] == null
           ? null
-          : DateTime.parse(json['createdAt'] as String),
+          : DateTime.parse(json['created_at'] as String),
     );
 
 Map<String, dynamic> _$ChatToJson(Chat instance) => <String, dynamic>{
       'id': instance.id,
       'text': instance.text,
       'user': instance.user,
-      'replyCount': instance.replyCount,
-      'unreadCount': instance.unreadCount,
-      'createdAt': instance.createdAt?.toIso8601String(),
+      'reply_count': instance.replyCount,
+      'unread_count': instance.unreadCount,
+      'created_at': instance.createdAt?.toIso8601String(),
     };
 
 Chats _$ChatsFromJson(Map<String, dynamic> json) => Chats(

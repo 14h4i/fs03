@@ -49,6 +49,8 @@ class MessageWidget extends StatelessWidget {
         ),
         Text(
           message,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
           style: TextStyle(
             color: Colors.white,
             fontSize: fontSize,
